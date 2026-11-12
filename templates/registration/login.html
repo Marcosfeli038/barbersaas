@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Entrar · BarberAgenda{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Entrar</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Entrar</button>
+  </form>
+  <p class="muted">Ainda não tem conta? <a href="{% url 'cadastro' %}">Teste grátis por 14 dias</a>.</p>
+</div>
+{% endblock %}

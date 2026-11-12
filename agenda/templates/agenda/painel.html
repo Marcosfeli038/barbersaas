@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Agenda · {{ barbearia.nome }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ barbearia.nome }}</h1>
+  <p class="muted">Link para seus clientes agendarem:<br><a href="{{ link_publico }}">{{ link_publico }}</a></p>
+  {% if barbearia.assinatura_ativa_ate %}
+    <p class="muted">Plano {{ barbearia.get_plano_display }}
+      {% if barbearia.assinatura_valida %}· ativo até {{ barbearia.assinatura_ativa_ate|date:"d/m/Y" }}
+      {% else %}· <strong style="color:var(--bad)">expirado em {{ barbearia.assinatura_ativa_ate|date:"d/m/Y" }}</strong> (agendamento público pausado) · <a href="{% url 'assinatura' %}">Renovar agora</a>{% endif %}
+    </p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="row">
+    <a class="btn sec sm" href="?dia={{ dia_anterior|date:'Y-m-d' }}">← Anterior</a>
+    <h2 style="text-align:center;margin:0">{{ dia|date:"D, d/m/Y" }}</h2>
+    <a class="btn sec sm" href="?dia={{ dia_seguinte|date:'Y-m-d' }}" style="text-align:right">Próximo →</a>
+  </div>
+  <p class="muted">Faturamento concluído no dia: <strong>R$ {{ faturamento }}</strong></p>
+
+  {% for a in agendamentos %}
+    <div class="item">
+      <div>
+        <strong>{{ a.inicio|time:"H:i" }}</strong> · {{ a.cliente_nome }}
+        <span class="tag">{{ a.get_status_display }}</span><br>
+        <span class="muted">{{ a.servico.nome }} · {{ a.profissional.nome }} · {{ a.cliente_telefone }}</span>
+      </div>
+      <div class="row" style="flex:0 0 auto">
+        {% if a.status == "marcado" %}
+          <a class="btn ok sm" href="{{ a.link_whatsapp }}" target="_blank" rel="noopener">Lembrar no WhatsApp</a>
+          <form class="inline" method="post" action="{% url 'alterar_status' a.pk 'concluido' %}">{% csrf_token %}<button class="btn sec sm">Concluir</button></form>
+          <form class="inline" method="post" action="{% url 'alterar_status' a.pk 'cancelado' %}">{% csrf_token %}<button class="btn bad sm">Cancelar</button></form>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted">Nenhum agendamento neste dia.</p>
+  {% endfor %}
+</div>
+{% endblock %}

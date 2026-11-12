@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Sem barbearia · BarberAgenda{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Esta conta ainda não tem uma barbearia</h1>
+  <p class="muted">Você está logado como <strong>{{ user.username }}</strong>, mas esse usuário não está ligado a nenhuma barbearia (contas criadas com <code>createsuperuser</code> servem só para o <a href="/admin/">/admin/</a>).</p>
+  <p>Para usar o painel, saia e crie a conta da sua barbearia:</p>
+  <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Sair e criar minha barbearia</button></form>
+</div>
+{% endblock %}

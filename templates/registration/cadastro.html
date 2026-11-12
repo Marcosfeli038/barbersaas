@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Criar conta · BarberAgenda{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Teste grátis por 14 dias</h1>
+  <p class="muted">Crie a conta da sua barbearia e receba um link de agendamento para compartilhar com os clientes.</p>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Criar minha barbearia</button>
+  </form>
+</div>
+{% endblock %}

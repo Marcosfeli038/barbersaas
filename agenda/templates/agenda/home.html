@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>Agenda online para a sua barbearia</h1>
+  <p class="muted">Seus clientes marcam horário sozinhos por um link. Você vê tudo no painel e lembra cada um pelo WhatsApp com um clique.</p>
+  <p><a class="btn" href="{% url 'cadastro' %}">Começar teste grátis (14 dias)</a></p>
+</div>
+<div class="card">
+  <h3>O que você ganha</h3>
+  <ul>
+    <li>Página pública de agendamento com o nome da sua barbearia</li>
+    <li>Vários profissionais e serviços, sem conflito de horário</li>
+    <li>Lembrete por WhatsApp pronto para enviar</li>
+    <li>Painel com agenda do dia e faturamento</li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Agendar · {{ barbearia.nome }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ barbearia.nome }}</h1>
+  <p class="muted">Escolha o serviço, o profissional e o horário.</p>
+
+  <form method="get">
+    <div class="row">
+      <div>
+        <label for="servico">Serviço</label>
+        <select name="servico" id="servico" onchange="this.form.submit()">
+          <option value="">Selecione…</option>
+          {% for s in servicos %}
+            <option value="{{ s.pk }}" {% if servico and servico.pk == s.pk %}selected{% endif %}>{{ s.nome }} · {{ s.duracao_minutos }} min · R$ {{ s.preco }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="profissional">Profissional</label>
+        <select name="profissional" id="profissional" onchange="this.form.submit()">
+          <option value="">Selecione…</option>
+          {% for p in profissionais %}
+            <option value="{{ p.pk }}" {% if profissional and profissional.pk == p.pk %}selected{% endif %}>{{ p.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="dia">Dia</label>
+        <input type="date" name="dia" id="dia" value="{{ dia|date:'Y-m-d' }}" min="{% now 'Y-m-d' %}" onchange="this.form.submit()">
+      </div>
+    </div>
+  </form>
+</div>
+
+{% if servico and profissional %}
+<div class="card">
+  <h3>Horários em {{ dia|date:"d/m/Y" }}</h3>
+  {% if horarios %}
+  <form method="post" action="{% url 'confirmar_reserva' barbearia.slug %}">{% csrf_token %}
+    <input type="hidden" name="servico" value="{{ servico.pk }}">
+    <input type="hidden" name="profissional" value="{{ profissional.pk }}">
+    <div class="slots">
+      {% for h in horarios %}
+        <label class="slot"><input type="radio" name="inicio" value="{{ h.isoformat }}" required><span>{{ h|time:"H:i" }}</span></label>
+      {% endfor %}
+    </div>
+    <label for="id_cliente_nome">{{ form.cliente_nome.label }}</label>
+    {{ form.cliente_nome }}
+    <label for="id_cliente_telefone">{{ form.cliente_telefone.label }}</label>
+    {{ form.cliente_telefone }}
+    <p><button type="submit">Confirmar agendamento</button></p>
+  </form>
+  {% else %}
+    <p class="muted">Sem horários livres nesse dia. Tente outra data.</p>
+  {% endif %}
+</div>
+{% elif not servicos or not profissionais %}
+<div class="card muted">Esta barbearia ainda não configurou serviços e profissionais.</div>
+{% endif %}
+{% endblock %}

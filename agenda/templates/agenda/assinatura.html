@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Assinatura · {{ barbearia.nome }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Assinatura</h1>
+  <p class="muted">
+    Plano atual: <strong>{{ barbearia.get_plano_display }}</strong>
+    {% if barbearia.assinatura_ativa_ate %}
+      · {% if barbearia.assinatura_valida %}ativo até <strong>{{ barbearia.assinatura_ativa_ate|date:"d/m/Y" }}</strong>
+      {% else %}<strong style="color:var(--bad)">expirado em {{ barbearia.assinatura_ativa_ate|date:"d/m/Y" }}</strong>{% endif %}
+    {% endif %}
+  </p>
+  <p class="muted">Pague por Pix, cartão ou boleto no Mercado Pago. Cada pagamento renova 30 dias.</p>
+</div>
+
+<div class="row">
+  {% for chave, p in planos.items %}
+  <div class="card" style="flex:1 1 220px">
+    <h2>{{ p.nome }}</h2>
+    <p style="font-size:1.6rem;margin:.2em 0">R$ {{ p.preco }}<span class="muted" style="font-size:.9rem">/mês</span></p>
+    <p class="muted">{{ p.descricao }}</p>
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="plano" value="{{ chave }}">
+      <button type="submit">Assinar com Mercado Pago</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+{% if pagamentos %}
+<div class="card">
+  <h3>Últimos pagamentos</h3>
+  {% for pg in pagamentos %}
+    <div class="item"><span>{{ pg.criado_em|date:"d/m/Y H:i" }} · {{ pg.get_plano_display }} · R$ {{ pg.valor }}</span><span class="tag">{{ pg.get_status_display }}</span></div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Agendado · {{ barbearia.nome }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Horário confirmado ✅</h1>
+  <p><strong>{{ ag.servico.nome }}</strong> com {{ ag.profissional.nome }}<br>
+  {{ ag.inicio|date:"d/m/Y" }} às {{ ag.inicio|time:"H:i" }}</p>
+  <p class="muted">{{ barbearia.nome }}. Se precisar remarcar, fale com a barbearia.</p>
+  <a class="btn sec" href="{% url 'reservar' barbearia.slug %}">Fazer outro agendamento</a>
+</div>
+{% endblock %}
